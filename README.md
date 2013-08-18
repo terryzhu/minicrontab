@@ -18,3 +18,46 @@ fork -> fork -> the running instance -> fork to create scheduler -> fork job 1,2
 * sleep interval
 
 * other detailed implementation
+
+study the http://enterprise-storage-os.googlecode.com/files/vixie-cron-4.1.tar.bz2
+
+ISC cron tool code analysis
+
++ fork processes to setup the correct process structure
++ close input output stderr
++ load the cron data to the cron database(read from files)
++ calculate time and sleep
++ add the job into job queue
++ run the job from job queue
++ loop to step 3
+
+data structure:
+    
+    typedef struct _user {
+        struct _user    *next, *prev;   /* links */
+        char        *name;
+        time_t      mtime;      /* last modtime of crontab */
+        entry       *crontab;   /* this person's crontab */
+    } user;
+    
+    typedef struct _cron_db {
+        user        *head, *tail;   /* links */
+        time_t      mtime;      /* last modtime on spooldir */
+    } cron_db;
+    
+    typedef struct _entry {
+        struct _entry   *next;
+        struct passwd   *pwd;
+        char        **envp;
+        char        *cmd;
+        int     flags;
+    } entry;
+    
+    typedef struct _job {
+        struct _job *next;
+        entry       *e;
+        user        *u;
+    } job;
+    static job  *jhead = NULL, *jtail = NULL;
+
+![datagram](http://img.blog.csdn.net/20130818093338718?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdW5oYXBweXBlb3BsZQ==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast)
