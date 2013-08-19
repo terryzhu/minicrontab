@@ -12,4 +12,10 @@
 #define log(msg) printf("%s\n",msg);
 #endif
 
+typedef struct __cron_db
+{
+	struct entry * head,*tail;
+}cron_db;
+
+
 #endif

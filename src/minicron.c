@@ -1,14 +1,16 @@
 #include "include.h"
-#include "job.h"
+#include "entry.h"
 
 /**
  * how to stop the daemon and its children process
  * ps -ef |grep minicron |grep -v minicron.c|cut -c9-15|xargs kill -9
  */
+#define CLOSE_IT "ps -ef |grep minicron |grep -v minicron.c|cut -c9-15|xargs kill -9"
 void first_run_and_exit();
 void schedule();
 int main()
 {
+		log(CLOSE_IT);
     first_run_and_exit();
     log("\n\ndaemon process running");
     printf("pid is %d\n",getpid());
@@ -49,24 +51,26 @@ void schedule()
 {   
     log("schedule process running");
     printf("pid is %d\n",getpid());
-    struct tm time;
-    job test_job={time,"ls"};
-    // load_jobs();
+		cron_db db;
+		load_entry(&db);
     // schedule
+		// for each task in db
+		// if the task execution time is now, fork and run it
     int pid = fork();
     if(!pid)
     {
         log("executing process");
-        log(test_job.cmd);
         printf("pid is %d\n",getpid());
-        system(test_job.cmd);
+        // system(xxx);
         log("command is finished\n-----------------------------\n\n\n");
         exit(0);
     }
 
-    // signal(SIGCHLD,handle_chd);
+		// There is a bug how to catch the SIGCHLD when child exited
+		// signal(SIGCHLD,handle_chd); does not work
     // assume 10s crash for test
     sleep(10);
     log("schedule is crashed");
     exit(0);
 }
+

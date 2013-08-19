@@ -1,8 +1,7 @@
-SOURCE	=	minicron.c
-OBJ		=	minicron.o
+OBJ		=	minicron.o entry.o
 
-all:	minicron
-minicron:$(OBJ)
+all:	clean minicron 
+minicron:$(OBJ) 
 		gcc -o minicron	$(OBJ)
 
 clean:

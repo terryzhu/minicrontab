@@ -23,13 +23,14 @@ study the http://enterprise-storage-os.googlecode.com/files/vixie-cron-4.1.tar.b
 
 ISC cron tool code analysis
 
-+ fork processes to setup the correct process structure
-+ close input output stderr
-+ load the cron data to the cron database(read from files)
-+ calculate time and sleep
-+ add the job into job queue
-+ run the job from job queue
-+ loop to step 3
+1. fork processes to setup the correct process structure
+2. close input output stderr
+3. load the cron data to the cron database(read from files)
+4. calculate time and sleep
+5. check all the entry in database whether it should be run now
+6. add the to be running job into job queue
+7. run the job from job queue
+8. loop to step 3
 
 data structure:
     
