@@ -19,6 +19,13 @@ fork -> fork -> the running instance -> fork to create scheduler -> fork job 1,2
 
 * other detailed implementation
 
+**Time conversion algorithm:**
+
+* The daemon process has start time
+* The schedule process has the now time
+* So the clockTime = startTime + ( nowTime - startTime ) * rate
+* We can use clockTime to choose which job should be executed now.
+
 study the http://enterprise-storage-os.googlecode.com/files/vixie-cron-4.1.tar.bz2
 
 ISC cron tool code analysis
