@@ -58,7 +58,19 @@ data structure:
         struct passwd   *pwd;
         char        **envp;
         char        *cmd;
+        char    min[60];
+        char    hour[12];
+        char    dom[31];    // day of month
+        char    month[12];
+        char    dow[7];     // day of week
+        
         int     flags;
+        #define	MIN_STAR	0x01
+        #define	HR_STAR		0x02
+        #define	DOM_STAR	0x04
+        #define	DOW_STAR	0x08
+        #define	WHEN_REBOOT	0x10
+        #define	DONT_LOG	0x20
     } entry;
     
     typedef struct _job {
