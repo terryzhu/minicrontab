@@ -1,8 +1,9 @@
-OBJ		=	minicron.o entry.o
+OBJ		=	minicron.o entry.o 
+CFLAGS	=	-g
 
 all:	clean minicron 
 minicron:$(OBJ) 
-		gcc -o minicron	$(OBJ)
+		gcc $(CFLAGS) -o minicron	$(OBJ)
 
 clean:
 		rm -f minicron
