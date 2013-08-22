@@ -9,6 +9,9 @@
 void first_run_and_exit();
 void schedule();
 time_t calulate_clock_time(time_t start_time,int rate);
+
+int scheduler_pid = -1;
+
 int main()
 {
     log(CLOSE_IT);
@@ -48,7 +51,9 @@ void first_run_and_exit()
 void handle_chd(int sig)
 {
     log("handle_chd");
-    wait(NULL);
+    int pid = waitpid( -1, NULL, WNOHANG ); 
+    printf("%d [handle_chd]\n",pid);
+    // wait(NULL);
 }
 
 void schedule(time_t start_time)
@@ -59,13 +64,13 @@ void schedule(time_t start_time)
     cron_db db;
     load_entry(&db);
     // schedule
-    // There is a bug how to catch the SIGCHLD when child exited
-    // signal(SIGCHLD,handle_chd); //does not work, I didn't know how to handle <defunct> process
+    signal(SIGCHLD,handle_chd); 
     while (1)
     {
         clock_time = calulate_clock_time(start_time,db.rate);
         run_triggered_entry(&db,clock_time);
         log ("schedule is sleeping");
+        sleep(20);// handle_chd will interrupt the sleep()
         sleep(20);
     }
 }
