@@ -6,7 +6,6 @@ void load_entry( cron_db * db)
     // also read the time rate
 }
 
-
 void add_entry(entry_list * list,entry * e)
 {
     if (list->head == NULL)
