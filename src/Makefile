@@ -1,5 +1,5 @@
 OBJ		=	minicron.o entry.o 
-CFLAGS	=	-g
+CFLAGS	=	-g -Wall
 
 all:	clean minicron 
 minicron:$(OBJ) 

@@ -14,6 +14,11 @@
 #define log(msg) printf("%s\n",msg);
 #endif
 
+#define MAX_MIN 60
+#define MAX_HOUR 12
+#define MAX_DOM 31
+#define MAX_MONTH 12
+#define MAX_DOW 7
 typedef struct __entry
 {
     char * cmd;  /* job execute command */
@@ -23,11 +28,11 @@ typedef struct __entry
     /* 
      * job trigger time
      */
-    char    min[60];
-    char    hour[12];
-    char    dom[31];    // day of month
-    char    month[12];
-    char    dow[7];     // day of week
+    char    min[MAX_MIN];
+    char    hour[MAX_HOUR];
+    char    dom[MAX_DOM];    // day of month
+    char    month[MAX_MONTH];
+    char    dow[MAX_DOW];     // day of week
 }entry;
 
 typedef struct __entry_list
