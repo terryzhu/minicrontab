@@ -1,0 +1,2 @@
+all:terry_parse_line
+	gcc -o terry_parse_line terry_parse_line.c

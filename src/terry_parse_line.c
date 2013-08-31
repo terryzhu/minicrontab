@@ -27,7 +27,7 @@ void debug_entry(entry * e)
 
 void set_bit(char * buf,int index)
 {
-    printf("%d ",index);
+//    printf("%d ",index);
     buf[index] = 1;
 }
 void set_entry_bit(char * data,int from,int to,int low,int high,int repeat)
@@ -41,7 +41,7 @@ void set_entry_bit(char * data,int from,int to,int low,int high,int repeat)
     {
         repeat = 1;
     }
-    printf("from=%d to=%d low=%d high=%d repeat=%d\n",from,to,low,high,repeat);
+//     printf("from=%d to=%d low=%d high=%d repeat=%d\n",from,to,low,high,repeat);
     int i;
     int f_g_t = from > to;// from is greater than to
     if (f_g_t)
@@ -115,12 +115,13 @@ void parse_word(char * e_data,char * word,int low,int high)
         ranges = strtok_r(NULL, ",",&sp_comma);
     }
 }
-entry * parse_line(char * line)
+entry * terry_parse_line(char * line)
 {
     if (line[0] == '#')
     {
         return NULL; 
     }
+
     entry * e = (entry * )calloc(1,sizeof(entry));
     char * sp_space;
     // handle comment
@@ -153,7 +154,7 @@ int main()
     FILE * fp = fopen("cron.cfg","r");
     if (!fp)
     {
-        printf("can't open cfg file\n");
+        printf("can't open cron.cfg file\n");
         exit(-1);
     }
     char line[MAX_LINE_LENGTH];
@@ -161,13 +162,15 @@ int main()
     {
         printf("\n\n\n-----------------------------------------\n");
         printf("%s",line);
-        entry * e = parse_line(line);
+        entry * e = terry_parse_line(line);
         if(e)
         {
             debug_entry(e);
         }
+
         printf("\n-----------------------------------------\n");
     }
+    fclose(fp);
 
     return 0;
 }

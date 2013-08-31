@@ -8,14 +8,14 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include <string.h>
-
+#include <assert.h>
 
 #ifndef log
 #define log(msg) printf("%s\n",msg);
 #endif
 
 #define MAX_MIN 60
-#define MAX_HOUR 12
+#define MAX_HOUR 24
 #define MAX_DOM 31
 #define MAX_MONTH 12
 #define MAX_DOW 7
