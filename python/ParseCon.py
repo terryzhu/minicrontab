@@ -3,8 +3,6 @@ Created on 2013-12-23
 
 @author: ZJ
 '''
-from bsddb.test.test_compare import cmp
-from timeit import repeat
 
 MAX_MIN = 60
 MAX_HOUR = 24
