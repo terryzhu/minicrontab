@@ -22,12 +22,33 @@ class Task:
         self.cmd = ""
         
     def debug(self):
-            print self.min
-            print self.hour
-            print self.date
-            print self.month
-            print self.dow
-            print "cmd is " , self.cmd
+        print "minute:"
+        for i in range(0,MAX_MIN):
+            if self.min[i] == 1:
+                print i,
+        print
+        print "hour:"
+        for i in range(0,MAX_HOUR):
+            if self.hour[i] == 1:
+                print i,
+        print
+        print "date:"
+        for i in range(0,MAX_DOM):
+            if self.date[i] == 1:
+                print i+1, # lower bound is 1
+        print
+        print "month:"
+        for i in range(0,MAX_MONTH):
+            if self.month[i] == 1:
+                print i+1, # lower bound is 1
+        print
+        print "day of week:"
+        for i in range(0,MAX_DOW):
+            if self.dow[i] == 1:
+                print i,
+        print
+        print "cmd is " , self.cmd
+        print
         
 def parseLine(line):
     if cmp(line[0] , "#") == 0:
@@ -45,8 +66,8 @@ def parseLine(line):
 
     parseTime(task.min, minStr, 0, MAX_MIN - 1)
     parseTime(task.hour, hourStr, 0, MAX_HOUR - 1)
-    parseTime(task.date, dateStr, 0, MAX_DOM - 1)
-    parseTime(task.month, monthStr, 0, MAX_MONTH - 1)
+    parseTime(task.date, dateStr, 1, MAX_DOM)
+    parseTime(task.month, monthStr, 1, MAX_MONTH)
     parseTime(task.dow, dowStr, 0, MAX_DOW - 1)
     task.cmd = cmd
     
@@ -79,12 +100,9 @@ def parseTime(data, time, low, high):
                 frm = to = ANYTIME;
             else:
                 frm = to = int(range_)
-        print "repeat = ", repeat , " from = ", frm, " to = ", to
+        # print "repeat = ", repeat , " from = ", frm, " to = ", to
         set_task_bit(data, frm, to, low, high, repeat)
     # for range_ in ranges END 
-    
-    print
-    
 
 def set_task_bit(data, frm, to, low, high, repeat):
     if frm == ANYTIME and to == ANYTIME:
@@ -92,19 +110,15 @@ def set_task_bit(data, frm, to, low, high, repeat):
         to = high
     if repeat == -1:
         repeat = 1;
-        
-    # printf("from=%d to=%d low=%d high=%d repeat=%d\n",from,to,low,high,repeat);
-    i = 0
-    tmp = 0
+            
     f_g_t = frm > to; # frm is greater than to
     if f_g_t:
         # such as 21 - 7 / 2
         for i in range(frm - low, high - low + 1, repeat):
             #fill 21, 23
             data[i] = 1;
-        tmp = i - (high - low + 1)
-        for i in range(tmp, to - low + 1, repeat):
-            #fill 1, 2, 3, 5, 7
+        for i in range(i - (high - low + 1), to - low + 1, repeat):
+            #fill 1, 3, 5, 7
             data[i] = 1;
     else:
         for i in range(frm - low, to - low + 1, repeat):
@@ -116,3 +130,4 @@ for line in  f.readlines():
     task = parseLine(line.rstrip())
     if not task == None:
         task.debug()
+f.close()
