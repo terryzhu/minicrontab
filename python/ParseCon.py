@@ -93,7 +93,7 @@ def parseTime(data, time, low, high):
             if "/" in range_:
                 to = int(range_[range_.index("-") + 1:range_.index("/")])
             else:
-                to = int(range_[range_.index("-"):])
+                to = int(range_[range_.index("-") + 1:])
         else:
             # 10 or *
             if cmp(range_[0], "*") == 0:
