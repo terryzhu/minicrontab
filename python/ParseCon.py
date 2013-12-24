@@ -12,48 +12,19 @@ MAX_DOW = 7
 
 ANYTIME = 0xff
 
-class Task:
-    def __init__(self):
-        self.min = [0] * MAX_MIN
-        self.hour = [0] * MAX_HOUR
-        self.date = [0] * MAX_DOM #day of month
-        self.month = [0] * MAX_MONTH
-        self.dow = [0] * MAX_DOW
-        self.cmd = ""
-        
-    def debug(self):
-        print "minute:"
-        for i in range(0,MAX_MIN):
-            if self.min[i] == 1:
-                print i,
-        print
-        print "hour:"
-        for i in range(0,MAX_HOUR):
-            if self.hour[i] == 1:
-                print i,
-        print
-        print "date:"
-        for i in range(0,MAX_DOM):
-            if self.date[i] == 1:
-                print i+1, # lower bound is 1
-        print
-        print "month:"
-        for i in range(0,MAX_MONTH):
-            if self.month[i] == 1:
-                print i+1, # lower bound is 1
-        print
-        print "day of week:"
-        for i in range(0,MAX_DOW):
-            if self.dow[i] == 1:
-                print i,
-        print
-        print "cmd is " , self.cmd
-        print
-        
+# low means the lower bound of some attributes
+# such as the minimum value of minute and hour and day of week is 0
+# while the minimum value of day fo month and month is 1
+def printTime(msg,attri,low,high):
+    print msg
+    for i in range(0,high):
+        if attri[i] == 1:
+            print i + low,
+    print
+
 def parseLine(line):
     if cmp(line[0] , "#") == 0:
         return
-    print "The task is: ", line
     splitedStr = line.split(" ", 5)
     minStr = splitedStr[0]
     hourStr = splitedStr[1]
@@ -73,61 +44,89 @@ def parseLine(line):
     
     return task
     
-# @param data: 
-#     such asTask.min, Task.hour etc
+# @param attr: 
+#     the attribute such as Task.min, Task.hour etc
 # @param str:
-#     The time to be parsed
+#     The time to be parsed, such as 23-7/2, 1-3, *, */3 etc
 # @param low:
-#    lower bound the the item, such as, dow's low is 1 while min's low is 0
-def parseTime(data, time, low, high):
+#    lower bound the the attribute, such as, dow's low is 1 while min's low is 0
+# @param high:
+#    upper bound of the attribute
+def parseTime(attr, time, low, high):
     ranges = time.split(",")
     for range_ in ranges:
-        # handle like 23-7/2
+        # handle each condition splited by commar
         repeat = -1
         frm = -1
         to = -1
         if "/" in range_:
+            # get repeat value 2 in 23-7/2
             repeat = int(range_[range_.index("/") + 1:])
         if "-" in range_:
+            # get the from value 23 in 23-7/2
             frm = int(range_[:range_.index("-")])
             if "/" in range_:
+                # get the to value 7 in 23-7/2
                 to = int(range_[range_.index("-") + 1:range_.index("/")])
             else:
+                # get the to value 8 in 23-8 when no slash
                 to = int(range_[range_.index("-") + 1:])
         else:
-            # 10 or *
+            # no hyphen condition such as * or just number
             if cmp(range_[0], "*") == 0:
                 frm = to = ANYTIME;
             else:
                 frm = to = int(range_)
         # print "repeat = ", repeat , " from = ", frm, " to = ", to
-        set_task_bit(data, frm, to, low, high, repeat)
-    # for range_ in ranges END 
+        setAttriValue(attr, frm, to, low, high, repeat)
+    # for END 
 
-def set_task_bit(data, frm, to, low, high, repeat):
+def setAttriValue(attr, frm, to, low, high, repeat):
     if frm == ANYTIME and to == ANYTIME:
         frm = low
         to = high
     if repeat == -1:
         repeat = 1;
-            
-    f_g_t = frm > to; # frm is greater than to
-    if f_g_t:
-        # such as 21 - 7 / 2
+
+    fromGreaterThanTo = frm > to; # frm is greater than to
+    if fromGreaterThanTo:
+        # such as 21-7/2
         for i in range(frm - low, high - low + 1, repeat):
             #fill 21, 23
-            data[i] = 1;
+            attr[i] = 1;
         for i in range(i - (high - low + 1), to - low + 1, repeat):
             #fill 1, 3, 5, 7
-            data[i] = 1;
+            attr[i] = 1;
     else:
+        # such as 7-21/2
         for i in range(frm - low, to - low + 1, repeat):
-            data[i] = 1;
+            #fill 7,9,11,13 ... 19,21
+            attr[i] = 1;
 
+class Task:
+    def __init__(self):
+        self.min = [0] * MAX_MIN
+        self.hour = [0] * MAX_HOUR
+        self.date = [0] * MAX_DOM #day of month
+        self.month = [0] * MAX_MONTH
+        self.dow = [0] * MAX_DOW #day of week
+        self.cmd = ""
+        
+    def debug(self):
+        printTime("minute:",self.min,0,MAX_MIN)
+        printTime("hour:",self.hour,0,MAX_HOUR)
+        printTime("date:",self.date,1,MAX_DOM)
+        printTime("month:",self.month,1,MAX_MONTH)
+        printTime("day of week:",self.dow,0,MAX_DOW)
+        print "cmd is " , self.cmd
+        print
 
+# Main function #
 f = open('cron.cfg', 'r')
-for line in  f.readlines():
-    task = parseLine(line.rstrip())
+for line in f.readlines():
+    line = line.rstrip()
+    print "Line is ",line
+    task = parseLine(line)
     if not task == None:
         task.debug()
 f.close()
