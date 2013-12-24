@@ -59,18 +59,20 @@ def parseTime(attr, time, low, high):
         repeat = -1
         frm = -1
         to = -1
-        if "/" in range_:
+        slashIndex = range_.find("/")
+        hyphenIndex = range_.find("-")
+        if slashIndex != -1:
             # get repeat value 2 in 23-7/2
-            repeat = int(range_[range_.index("/") + 1:])
-        if "-" in range_:
+            repeat = int(range_[slashIndex + 1:])
+        if hyphenIndex != -1:
             # get the from value 23 in 23-7/2
-            frm = int(range_[:range_.index("-")])
+            frm = int(range_[:hyphenIndex])
             if "/" in range_:
                 # get the to value 7 in 23-7/2
-                to = int(range_[range_.index("-") + 1:range_.index("/")])
+                to = int(range_[hyphenIndex + 1:slashIndex])
             else:
                 # get the to value 8 in 23-8 when no slash
-                to = int(range_[range_.index("-") + 1:])
+                to = int(range_[hyphenIndex + 1:])
         else:
             # no hyphen condition such as * or just number
             if cmp(range_[0], "*") == 0:
